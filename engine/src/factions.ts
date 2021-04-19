@@ -49,6 +49,11 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
     name: "Bescods",
     planet: Planet.Titanium,
   },
+  [Faction.Darloks]: {
+    name: "Darloks",
+    planet: Planet.Titanium,
+    board: Boards[Faction.Darloks],
+  },
   [Faction.Nevlas]: {
     name: "Nevlas",
     planet: Planet.Ice,
@@ -59,16 +64,12 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
   },
 } as const;
 
-export function oppositeFaction(faction: Faction): Faction {
+export function oppositeFaction(faction: Faction): Faction[] {
   if (!Object.values(Faction).includes(faction)) {
     return null;
   }
 
-  for (const fct of Object.values(Faction)) {
-    if (fct !== faction && factions[fct].planet === factions[faction].planet) {
-      return fct;
-    }
-  }
+  return Object.values(Faction).filter((fct) => fct !== faction && factions[fct].planet === factions[faction].planet);
 }
 
 export function factionPlanet(faction: Faction): Planet {

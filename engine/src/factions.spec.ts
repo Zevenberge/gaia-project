@@ -5,7 +5,7 @@ import { oppositeFaction } from "./factions";
 
 describe("Factions", () => {
   it("lantids should be opposite terrans", () => {
-    expect(oppositeFaction(Faction.Terrans)).to.equal(Faction.Lantids);
+    expect(oppositeFaction(Faction.Terrans)[0]).to.equal(Faction.Lantids);
   });
 
   describe("balanced variant", () => {

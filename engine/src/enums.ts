@@ -72,6 +72,8 @@ export enum Resource {
   TemporaryRange = "range",
   TokenArea3 = "t-a3",
   PISwap = "swap-PI",
+  SpyTech = "spy-tech",
+  SpyAdvancedTech = "spy-advanced-tech",
   Turn = "turn",
 }
 
@@ -160,6 +162,7 @@ export enum Faction {
   Ambas = "ambas",
   Firaks = "firaks",
   Bescods = "bescods",
+  Darloks = "darloks",
   Nevlas = "nevlas",
   Itars = "itars",
 }
@@ -189,6 +192,8 @@ export enum Command {
   RotateSectors = "rotate",
   Special = "special",
   Spend = "spend",
+  SpyAdvancedTech = "spy-advanced-tech",
+  SpyTech = "spy-tech",
   UpgradeResearch = "up",
 }
 
@@ -515,4 +520,5 @@ export enum SubPhase {
   PISwap = "swap-PI",
   DowngradeLab = "down-lab",
   PickRewards = "pickRewards",
+  SpyTech = "spy-tech",
 }
