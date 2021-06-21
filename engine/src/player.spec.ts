@@ -20,6 +20,7 @@ describe("Player", () => {
       const { cost } = player.canBuild(Planet.Terra, Building.Mine, { addedCost: [new Reward(1, Resource.Qic)] });
 
       // tslint:disable-next-line no-unused-expression
+      console.log(cost);
       expect(Reward.match(Reward.parse("2c,o,q"), cost)).to.be.true;
     });
   });

@@ -1,4 +1,5 @@
 import { difference, range } from "lodash";
+import { PlayerEnum } from "..";
 import {
   boardActions,
   ConversionPool,
@@ -31,7 +32,7 @@ import {
   TechTile,
   TechTilePos,
 } from "./enums";
-import { oppositeFaction } from "./factions";
+import { remainingFactions } from "./factions";
 import { GaiaHex } from "./gaia-hex";
 import SpaceMap from "./map";
 import PlayerObject, { BuildCheck, BuildWarning } from "./player";
@@ -114,6 +115,7 @@ type PossibleBid = { faction: Faction; bid: number[] };
 type TechTileWithPos = { tile: TechTile; pos: TechTilePos };
 type AdvTechTileWithPos = { tile: AdvTechTile; pos: AdvTechTilePos };
 type ChooseTechTile = TechTileWithPos | AdvTechTileWithPos;
+type ChooseSpyTechTile = { tile: TechTile; pos: TechTilePos; player: PlayerEnum };
 
 type AvailableBuildCommandData = { buildings: AvailableBuilding[] };
 
@@ -141,6 +143,7 @@ interface CommandData {
   [Command.RotateSectors]: never;
   [Command.Special]: { specialacts: { income: string; spec: string }[] };
   [Command.Spend]: AvailableFreeActionData;
+  [Command.SpyTech]: {tiles: ChooseSpyTechTile[]};
   [Command.UpgradeResearch]: AvailableResearchData;
 }
 
@@ -999,7 +1002,7 @@ export function possiblePISwaps(engine: Engine, player: Player) {
   return commands;
 }
 
-export function remainingFactions(engine: Engine) {
+export function factionsToBePicked(engine: Engine) {
   if (engine.randomFactions) {
     if (engine.options.auction && engine.options.auction !== AuctionVariant.ChooseBid) {
       // In auction the player can pick from the pool of random factions
@@ -1010,11 +1013,7 @@ export function remainingFactions(engine: Engine) {
     }
   } else {
     // Standard
-    return difference(
-      Object.values(Faction),
-      engine.setup.map((f) => f),
-      engine.setup.map((f) => oppositeFaction(f))
-    );
+    return remainingFactions(engine.setup, engine.expansions);
   }
 }
 
@@ -1022,7 +1021,7 @@ function chooseFactionOrBid(engine: Engine, player: Player): AvailableCommand<Co
   const chooseFaction: AvailableCommand<Command.Bid | Command.ChooseFaction> = {
     name: Command.ChooseFaction,
     player,
-    data: remainingFactions(engine),
+    data: factionsToBePicked(engine),
   };
   if (engine.options.auction === AuctionVariant.BidWhileChoosing) {
     return [...possibleBids(engine, player), chooseFaction];

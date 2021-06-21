@@ -3,7 +3,7 @@ import { iteratee } from "lodash";
 import { PlayerEnum } from "../..";
 import { generate, generate as generatePossibleMoves, possibleSpecialActions } from "../available-command";
 import Engine from "../engine";
-import { Command, Resource, SubPhase, TechTilePos } from "../enums";
+import { Command, Expansion, Resource, SubPhase, TechTilePos } from "../enums";
 
 describe("Darloks", () => {
   it("should not be able to spy on a tech tile if no one has one", () => {
@@ -19,7 +19,7 @@ describe("Darloks", () => {
     p1 booster booster4
     p1 pass booster8
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion} );
     const specialActions = possibleSpecialActions(engine, engine.currentPlayer);
     expect(specialActions.length).to.equal(0);
   });
@@ -39,7 +39,7 @@ describe("Darloks", () => {
     p2 build ts -1x-1.
     p1 build lab -4x2. tech gaia. up gaia.
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const specialActions = possibleSpecialActions(engine, engine.currentPlayer);
     expect(specialActions.length).to.equal(1);
     const spyTech = specialActions[0].data.specialacts[0];
@@ -63,7 +63,7 @@ describe("Darloks", () => {
     p2 build lab -1x-1. tech gaia. up gaia.
     p1 pass booster8
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const specialActions = possibleSpecialActions(engine, engine.currentPlayer);
     expect(specialActions.length).to.equal(0);
   });
@@ -85,7 +85,7 @@ describe("Darloks", () => {
     p2 build lab -1x-1. tech eco. up eco.
     p1 pass booster8
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const specialActions = possibleSpecialActions(engine, engine.currentPlayer);
     expect(specialActions.length).to.equal(1);
     const spyTech = specialActions[0].data.specialacts[0];
@@ -107,7 +107,7 @@ describe("Darloks", () => {
     p2 build ts -1x-1.
     p1 build lab -4x2. tech gaia. up gaia.
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const availableCommands = generate(engine, SubPhase.SpyTech);
     expect(availableCommands.length).to.equal(1);
     expect(availableCommands[0].name).to.equal(Command.SpyTech);
@@ -132,7 +132,7 @@ describe("Darloks", () => {
     p1 build lab -4x2. tech gaia. up gaia.
     p2 special spy-tech. spy-tech p1 gaia.
     `);
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const p2 = engine.players[1];
     const techs = p2.data.tiles.techs;
     expect(techs.length).to.equal(1);
@@ -171,7 +171,7 @@ describe("Darloks", () => {
       "hadsch-hallas pass booster1 returning booster9",
       "darloks special spy-tech. spy-tech hadsch-hallas terra.",
     ];
-    const engine = new Engine(moves);
+    const engine = new Engine(moves, { expansion: Expansion.MasterOfOrion});
     const p1 = engine.players[0];
     const techs = p1.data.tiles.techs;
     const spiedTechs = techs.filter((t) => !!t.owner);

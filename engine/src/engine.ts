@@ -10,7 +10,7 @@ import AvailableCommand, {
   BrainstoneActionData,
   generate as generateAvailableCommands,
   Offer,
-  remainingFactions,
+  factionsToBePicked,
 } from "./available-command";
 import { stdBuildingValue } from "./buildings";
 import {
@@ -83,6 +83,8 @@ export interface EngineOptions {
   layout?: "standard" | "balanced" | "xshape";
   /* Force players to have random factions */
   randomFactions?: boolean;
+  /* What expansion are we playing? */
+  expansion?: Expansion;
 }
 
 export type LogEntryChanges = {
@@ -202,7 +204,7 @@ export default class Engine {
   version = version;
 
   get expansions() {
-    return 0;
+    return this.options?.expansion;
   }
 
   round: number = Round.None;
@@ -1461,7 +1463,7 @@ export default class Engine {
       const randomFactions = [];
 
       for (const _ of this.players) {
-        const possible = remainingFactions({ ...this, setup: randomFactions });
+        const possible = factionsToBePicked({ ...this, setup: randomFactions });
 
         randomFactions.push(possible[Math.floor(possible.length * this.map.rng())]);
       }

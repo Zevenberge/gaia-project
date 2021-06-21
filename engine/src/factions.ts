@@ -1,6 +1,10 @@
-import { Faction, Planet } from "./enums";
+import { difference } from "lodash";
+import Engine from "..";
+import { Expansion, Faction, Planet } from "./enums";
 
-const factions: { [key in Faction]: { name: string; planet: Planet } } = {
+type FactionList = { [key: string]: { name: string; planet: Planet } };
+
+export const baseFactions: FactionList = {
   [Faction.Terrans]: {
     name: "Terrans",
     planet: Planet.Terra,
@@ -8,22 +12,6 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
   [Faction.Lantids]: {
     name: "Lantids",
     planet: Planet.Terra,
-  },
-  [Faction.Xenos]: {
-    name: "Xenos",
-    planet: Planet.Desert,
-  },
-  [Faction.Gleens]: {
-    name: "Gleens",
-    planet: Planet.Desert,
-  },
-  [Faction.Taklons]: {
-    name: "Taklons",
-    planet: Planet.Swamp,
-  },
-  [Faction.Ambas]: {
-    name: "Ambas",
-    planet: Planet.Swamp,
   },
   [Faction.HadschHallas]: {
     name: "Hadsch Hallas",
@@ -41,6 +29,22 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
     name: "Bal T'aks",
     planet: Planet.Volcanic,
   },
+  [Faction.Xenos]: {
+    name: "Xenos",
+    planet: Planet.Desert,
+  },
+  [Faction.Gleens]: {
+    name: "Gleens",
+    planet: Planet.Desert,
+  },
+  [Faction.Taklons]: {
+    name: "Taklons",
+    planet: Planet.Swamp,
+  },
+  [Faction.Ambas]: {
+    name: "Ambas",
+    planet: Planet.Swamp,
+  },
   [Faction.Firaks]: {
     name: "Firaks",
     planet: Planet.Titanium,
@@ -48,11 +52,6 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
   [Faction.Bescods]: {
     name: "Bescods",
     planet: Planet.Titanium,
-  },
-  [Faction.Darloks]: {
-    name: "Darloks",
-    planet: Planet.Titanium,
-    board: Boards[Faction.Darloks],
   },
   [Faction.Nevlas]: {
     name: "Nevlas",
@@ -64,21 +63,49 @@ const factions: { [key in Faction]: { name: string; planet: Planet } } = {
   },
 } as const;
 
-export function oppositeFaction(faction: Faction): Faction[] {
-  if (!Object.values(Faction).includes(faction)) {
+const mooFactions: FactionList= {
+  [Faction.Darloks]: {
+    name: "Darloks",
+    planet: Planet.Titanium,
+  },
+}
+
+const allFactions = {...baseFactions, ...mooFactions};
+
+function factionsInPlay(expansions: Expansion) : FactionList {
+  if(expansions === Expansion.MasterOfOrion) {
+    return allFactions;
+  }
+  return baseFactions;
+}
+
+function names(factions: FactionList) {
+  return Object.keys(factions) as Faction[];
+}
+
+export function remainingFactions(chosenFactions: Faction[], expansions: Expansion) : Faction[] {
+  return difference(
+    names(factionsInPlay(expansions)),
+    chosenFactions,
+    chosenFactions.flatMap((f) => oppositeFaction(f, expansions))
+  );
+}
+
+export function oppositeFaction(faction: Faction, expansions: Expansion): Faction[] {
+  const availableFactions = factionsInPlay(expansions);
+  const factionNames = names(factionsInPlay(expansions));
+
+  if (!factionNames.includes(faction)) {
     return null;
   }
 
-  return Object.values(Faction).filter((fct) => fct !== faction && factions[fct].planet === factions[faction].planet);
+  return factionNames.filter((fct: Faction) => fct !== faction && availableFactions[fct].planet === availableFactions[faction].planet);
 }
 
 export function factionPlanet(faction: Faction): Planet {
-  const fact = factions[faction];
-
+  const fact = allFactions[faction];
   if (fact) {
     return fact.planet;
   }
   return Planet.Lost;
 }
-
-export default factions;

@@ -22,7 +22,9 @@ export enum ResearchField {
 }
 
 export enum Expansion {
+  None = 0,
   All = 1,
+  MasterOfOrion = 2,
 }
 
 export namespace ResearchField {
