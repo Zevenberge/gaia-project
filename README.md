@@ -11,6 +11,8 @@ Checkout their READMEs:
 
 ## Demo
 
+This is a git demo.
+
 Check out [boardgamers.space](https://www.boardgamers.space)! Reach out to us if you want to contribute.
 
 ## Install
